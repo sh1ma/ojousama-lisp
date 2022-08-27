@@ -10,7 +10,7 @@ pub(crate) struct Lexer<'a> {
 }
 
 impl<'a> Lexer<'a> {
-    fn new(src: &'a str) -> Self {
+    pub fn new(src: &'a str) -> Self {
         Self { chars: src.chars() }
     }
 
