@@ -14,10 +14,11 @@ fn main() {
         .expect("Failed to read line.");
 
     let mut lexer = Lexer::new(&input);
-    let mut token = lexer.next_token();
-    println!("{:?}", &token);
-    while token.kind != TokenKind::EOF {
-        token = lexer.next_token();
+    loop {
+        let token = lexer.next_token();
         println!("{:?}", &token);
+        if token.kind == TokenKind::EOF {
+            break;
+        }
     }
 }
