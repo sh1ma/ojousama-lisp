@@ -1,11 +1,11 @@
 #[derive(Debug, PartialEq)]
 pub(crate) struct Token {
     pub kind: TokenKind,
-    pub literal: char,
+    pub literal: String,
 }
 
 impl Token {
-    pub(crate) fn new(kind: TokenKind, literal: char) -> Self {
+    pub(crate) fn new(kind: TokenKind, literal: String) -> Self {
         Self { kind, literal }
     }
 }
@@ -14,7 +14,7 @@ impl Token {
 pub(crate) enum TokenKind {
     Illegal,
     EOF,
-    // Identfier,
+    Identfier,
     // Int,
     // Comma,
     OpenParen,
