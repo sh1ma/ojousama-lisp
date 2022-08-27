@@ -43,8 +43,10 @@ impl Lexer<'_> {
                 '(' => Token::new(TokenKind::OpenParen, ch_string),
                 ')' => Token::new(TokenKind::CloseParen, ch_string),
                 value => {
-                    if is_allow_character_for_identifier(&value) {
+                    if is_id_chracter(&value) {
                         self.letter(value)
+                    } else if value.is_numeric() {
+                        self.number(value)
                     } else {
                         Token::new(TokenKind::Illegal, ch.to_string())
                     }
@@ -59,7 +61,7 @@ impl Lexer<'_> {
         let mut identifier = vec![value];
         let mut cloned_chars = self.chars.clone();
         while let Some(ch) = cloned_chars.next() {
-            if is_allow_character_for_identifier(&ch) {
+            if is_id_chracter(&ch) {
                 identifier.push(ch);
                 self.read();
             } else {
@@ -69,9 +71,24 @@ impl Lexer<'_> {
         let identifier = String::from_iter(identifier);
         Token::new(TokenKind::Identfier, identifier)
     }
+
+    fn number(&mut self, value: char) -> Token {
+        let mut literal = vec![value];
+        let mut cloned_chars = self.chars.clone();
+        while let Some(ch) = cloned_chars.next() {
+            if ch.is_numeric() {
+                literal.push(ch);
+                self.read();
+            } else {
+                break;
+            }
+        }
+        let identifier = String::from_iter(literal);
+        Token::new(TokenKind::Int, identifier)
+    }
 }
 
-fn is_allow_character_for_identifier(ch: &char) -> bool {
+fn is_id_chracter(ch: &char) -> bool {
     ch.is_alphabetic() || ch == &'_'
 }
 
@@ -99,6 +116,25 @@ mod tests {
             (TokenKind::OpenParen, "("),
             (TokenKind::Identfier, "hello"),
             (TokenKind::Identfier, "world"),
+            (TokenKind::CloseParen, ")"),
+        ];
+
+        let mut lexer = Lexer::new(input);
+        for ex in expected {
+            let token = lexer.next_token();
+            assert_eq!(token.kind, ex.0);
+            assert_eq!(token.literal, ex.1);
+        }
+    }
+
+    #[test]
+    fn test_next_token_number() {
+        let input = "(hello 123 number)";
+        let expected = vec![
+            (TokenKind::OpenParen, "("),
+            (TokenKind::Identfier, "hello"),
+            (TokenKind::Int, "123"),
+            (TokenKind::Identfier, "number"),
             (TokenKind::CloseParen, ")"),
         ];
 

@@ -15,7 +15,7 @@ pub(crate) enum TokenKind {
     Illegal,
     EOF,
     Identfier,
-    // Int,
+    Int,
     // Comma,
     OpenParen,
     CloseParen,
